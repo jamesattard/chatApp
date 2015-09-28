@@ -6,9 +6,14 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+io.on('connection', function(socketz){
+  var nickname = 'guest' + Math.floor(Math.random() * 6) + 1;
+  io.emit('chat message', nickname + ' connected');
+  socketz.on('disconnect', function(){
+    io.emit('chat message', nickname + ' disconnected');
+  });
+  socketz.on('chat message', function(msg){
+    io.emit('chat message', nickname + ': ' + msg);
   });
 });
 
